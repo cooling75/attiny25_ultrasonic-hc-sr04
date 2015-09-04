@@ -1,0 +1,53 @@
+/*
+ATTiny25 2kB Ultrasonic readout
+
+http://www.mikrocontroller.net/attachment/218122/HC-SR04_ultraschallmodul_beschreibung_3.pdf */
+
+int led = 3;
+int trigger = 4;
+int echo = 1;
+
+void setup() {
+  pinMode(led, OUTPUT);
+  pinMode(trigger, OUTPUT);
+  pinMode(echo, INPUT);
+}
+
+void loop() {
+  long duration, cm, start;
+
+
+  digitalWrite(trigger, HIGH);
+  delay(1000);
+  digitalWrite(trigger, LOW);
+  // delayMicroseconds(460);
+
+  while (digitalRead(echo) == LOW) {
+    // wait to go high
+  }
+  // Start timera
+  start = micros();
+
+
+  while (digitalRead(echo) == HIGH) {
+    // wait for falling edge
+  }
+  // Calculate distance
+  duration = micros() - start;
+  cm = microSecondsToCentimeters(duration);
+
+  // flash LED according to distance in cm
+  for (int a = 0; a < cm; a++) {
+    digitalWrite(led, HIGH); delay(100);
+    digitalWrite(led, LOW); delay(100);
+  }
+  delay(500);
+
+}
+
+long microSecondsToCentimeters(long micros) {
+  /* 343,2m/s ==> 29 µs/cm
+    µs / µs/cm => cm
+  */
+  return micros / 2 / 29;
+}
